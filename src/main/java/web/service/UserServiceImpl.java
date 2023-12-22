@@ -1,18 +1,24 @@
 package web.service;
 
-import web.dao.UserDao;
-import web.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import web.dao.UserDao;
+import web.models.User;
 
-import javax.transaction.Transactional;
 import java.sql.SQLException;
 import java.util.List;
 
 @Service
 @Transactional
-public class UserServiceImpl implements  UserService{
+public class UserServiceImpl implements UserService {
     private final UserDao userDao;
+
+    @Transactional(readOnly = true)
+    @Override
+    public User getById(int id) {
+        return userDao.getById(id);
+    }
 
     @Autowired
     public UserServiceImpl(UserDao userDao) {
@@ -20,19 +26,16 @@ public class UserServiceImpl implements  UserService{
     }
 
     @Override
-    public void saveUser(User user) throws SQLException {
+    public void saveUser(User user) {
         userDao.saveUser(user);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<User> listUsers() {
         return userDao.listUsers();
     }
 
-    @Override
-    public User getById(int id) {
-        return userDao.getById(id);
-    }
 
     @Override
     public void update(User user) {
